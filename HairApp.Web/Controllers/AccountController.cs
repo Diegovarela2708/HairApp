@@ -260,86 +260,82 @@ namespace HairApp.Web.Controllers
             return Json(city.Neighborhoods.OrderBy(c => c.Name));
         }
 
-        //public async Task<IActionResult> ChangeUser()
-        //{
-        //    User user = await _userHelper.GetUserAsync(User.Identity.Name);
-        //    if (user == null)
-        //    {
-        //        return NotFound();
-        //    }
+        public async Task<IActionResult> ChangeUser()
+        {
+            User user = await _userHelper.GetUserAsync(User.Identity.Name);
+            if (user == null)
+            {
+                return NotFound();
+            }
 
-        //    Department department = await _context.Departments.FirstOrDefaultAsync(d => d.Cities.FirstOrDefault(c => c.Id == user.City.Id) != null);
-        //    if (department == null)
-        //    {
-        //        department = await _context.Departments.FirstOrDefaultAsync();
-        //    }
+            City city = await _context.Cities.FirstOrDefaultAsync(d => d.Neighborhoods.FirstOrDefault(c => c.Id == user.Neighborhood.Id) != null);
+            if (city == null)
+            {
+                city = await _context.Cities.FirstOrDefaultAsync();
+            }
 
-        //    Country country = await _context.Countries.FirstOrDefaultAsync(c => c.Departments.FirstOrDefault(d => d.Id == department.Id) != null);
-        //    if (country == null)
-        //    {
-        //        country = await _context.Countries.FirstOrDefaultAsync();
-        //    }
+            Departament departament = await _context.Departaments.FirstOrDefaultAsync(c => c.Cities.FirstOrDefault(d => d.Id == city.Id) != null);
+            if (departament == null)
+            {
+                departament = await _context.Departaments.FirstOrDefaultAsync();
+            }
 
-        //    EditUserViewModel model = new EditUserViewModel
-        //    {
-        //        Address = user.Address,
-        //        FirstName = user.FirstName,
-        //        LastName = user.LastName,
-        //        PhoneNumber = user.PhoneNumber,
-        //        ImageId = user.ImageId,
-        //        Sections = _combosHelper.GetComboSections(),
-        //        SectionId = user.Section.Id,
-        //        Cities = _combosHelper.GetComboCities(department.Id),
-        //        CityId = user.City.Id,
-        //        Countries = _combosHelper.GetComboCountries(),
-        //        CountryId = country.Id,
-        //        DepartmentId = department.Id,
-        //        Departments = _combosHelper.GetComboDepartments(country.Id),
-        //        Id = user.Id,
-        //        Document = user.Document,
-        //        IsActive = user.IsActive
+            EditUserViewModel model = new EditUserViewModel
+            {
+                Address = user.Address,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                PhoneNumber = user.PhoneNumber,
+                ImageId = user.ImageId,                
+                Cities = _combosHelper.GetComboCities(departament.Id),
+                CityId = city.Id,
+                Departaments = _combosHelper.GetComboDepartaments(),
+                DepartamentId = departament.Id,
+                NeighborhoodId = user.Neighborhood.Id,
+                Neighborhoods = _combosHelper.GetComboNeighborhoods(city.Id),
+                Id = user.Id,
+                Document = user.Document,
+                IsActive = user.IsActive
 
-        //    };
+            };
 
-        //    return View(model);
-        //}
+            return View(model);
+        }
 
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> ChangeUser(EditUserViewModel model)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        Guid imageId = model.ImageId;
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangeUser(EditUserViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                Guid imageId = model.ImageId;
 
-        //        if (model.ImageFile != null)
-        //        {
-        //            imageId = await _blobHelper.UploadBlobAsync(model.ImageFile, "users");
-        //        }
+                if (model.ImageFile != null)
+                {
+                    imageId = await _blobHelper.UploadBlobAsync(model.ImageFile, "users");
+                }
 
-        //        User user = await _userHelper.GetUserAsync(User.Identity.Name);
+                User user = await _userHelper.GetUserAsync(User.Identity.Name);
 
-        //        user.FirstName = model.FirstName;
-        //        user.LastName = model.LastName;
-        //        user.Address = model.Address;
-        //        user.PhoneNumber = model.PhoneNumber;
-        //        user.ImageId = imageId;
-        //        user.Section = await _context.Sections.FindAsync(model.SectionId);
-        //        user.City = await _context.Cities.FindAsync(model.CityId);
-        //        user.Document = model.Document;
-        //        user.IsActive = model.IsActive;
+                user.FirstName = model.FirstName;
+                user.LastName = model.LastName;
+                user.Address = model.Address;
+                user.PhoneNumber = model.PhoneNumber;
+                user.ImageId = imageId;
+                user.Neighborhood = await _context.Neighborhoods.FindAsync(model.NeighborhoodId);
+                user.Document = model.Document;
+                user.IsActive = model.IsActive;
 
 
-        //        await _userHelper.UpdateUserAsync(user);
-        //        return RedirectToAction("Index", "Home");
-        //    }
+                await _userHelper.UpdateUserAsync(user);
+                return RedirectToAction("Index", "Home");
+            }
 
-        //    model.Cities = _combosHelper.GetComboCities(model.DepartmentId);
-        //    model.Countries = _combosHelper.GetComboCountries();
-        //    model.Departments = _combosHelper.GetComboDepartments(model.CityId);
-        //    model.Sections = _combosHelper.GetComboSections();
-        //    return View(model);
-        //}
+            model.Departaments = _combosHelper.GetComboDepartaments();
+            model.Cities = _combosHelper.GetComboCities(model.DepartamentId);
+            model.Neighborhoods = _combosHelper.GetComboNeighborhoods(model.CityId);
+            return View(model);
+        }
 
         //public IActionResult ChangePasswordMVC()
         //{
