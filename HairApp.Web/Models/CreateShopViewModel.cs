@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using HairApp.Web.Data.Entities;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace HairApp.Web.Models
 {
-    public class CreateShopViewModel
+    public class CreateShopViewModel:Shop
     {
         [Required]
         [Display(Name = "Departamento")]
@@ -26,6 +27,6 @@ namespace HairApp.Web.Models
         [Display(Name = "Barrio")]
         [Range(1, int.MaxValue, ErrorMessage = "Debe seleccionar un barrio.")]
         public int NeighborhoodId { get; set; }
-        public IEnumerable<SelectListItem> Neighborhoods { get; set; }
+        public IEnumerable<SelectListItem> Neighborhood { get; set; }
     }
 }
