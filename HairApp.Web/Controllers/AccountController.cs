@@ -5,8 +5,6 @@ using HairApp.Web.Data;
 using HairApp.Web.Data.Entities;
 using HairApp.Web.Helpers;
 using HairApp.Web.Models;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -27,7 +25,7 @@ namespace HairApp.Web.Controllers
         //private readonly IConverterHelper _converterHelper;
         private readonly IFlashMessage _flashMessage;
 
-        public AccountController(DataContext context,IUserHelper userHelper,ICombosHelper combosHelper,IBlobHelper blobHelper,IMailHelper mailHelper,
+        public AccountController(DataContext context, IUserHelper userHelper, ICombosHelper combosHelper, IBlobHelper blobHelper, IMailHelper mailHelper,
             /*IConverterHelper converterHelper,*/ IFlashMessage flashMessage)
         {
             _context = context;
@@ -39,21 +37,21 @@ namespace HairApp.Web.Controllers
             _flashMessage = flashMessage;
         }
 
-        [Authorize(Roles = "Admin")]
+
         public async Task<IActionResult> Index()
         {
             return View(await _context.Users
-                .Include(u => u.Neighborhood)                                
+                .Include(u => u.Neighborhood)
                 .ToListAsync());
         }
 
-        [Authorize(Roles = "Admin")]
+
         [HttpGet]
         public IActionResult Create()
         {
             AddUserViewModel model = new AddUserViewModel
             {
-                
+
                 Departaments = _combosHelper.GetComboDepartaments(),
                 Cities = _combosHelper.GetComboCities(0),
                 Neighborhoods = _combosHelper.GetComboNeighborhoods(0)
@@ -94,7 +92,7 @@ namespace HairApp.Web.Controllers
                     token = myToken
                 }, protocol: HttpContext.Request.Scheme);
 
-                Response response = _mailHelper.SendMail(model.Username,"Email Confirmacion", $"<h1>Email Confirmacion</h1>" +
+                Response response = _mailHelper.SendMail(model.Username, "Email Confirmacion", $"<h1>Email Confirmacion</h1>" +
                     $"El siguien enlace le pirmitira habilitar el usuario, " +
                     $"por favor haga clic en este enlace:</br></br><a href = \"{tokenLink}\">Confirm Email</a>");
                 if (response.IsSuccess)
@@ -176,11 +174,11 @@ namespace HairApp.Web.Controllers
         {
             AddUserViewModel model = new AddUserViewModel
             {
-             Departaments = _combosHelper.GetComboDepartaments(),
-            Cities = _combosHelper.GetComboCities(0),
-            Neighborhoods = _combosHelper.GetComboNeighborhoods(0)
+                Departaments = _combosHelper.GetComboDepartaments(),
+                Cities = _combosHelper.GetComboCities(0),
+                Neighborhoods = _combosHelper.GetComboNeighborhoods(0)
 
-        };
+            };
 
             return View(model);
         }
@@ -215,7 +213,7 @@ namespace HairApp.Web.Controllers
                     token = myToken
                 }, protocol: HttpContext.Request.Scheme);
 
-                Response response = _mailHelper.SendMail(model.Username,"Email Confirmacion", $"<h1>Email Confirmacion</h1>" +
+                Response response = _mailHelper.SendMail(model.Username, "Email Confirmacion", $"<h1>Email Confirmacion</h1>" +
                    $"El siguien enlace le pirmitira habilitar el usuario, " +
                    $"por favor haga clic en este enlace:</br></br><a href = \"{tokenLink}\">Confirm Email</a>");
                 if (response.IsSuccess)
@@ -230,7 +228,7 @@ namespace HairApp.Web.Controllers
             model.Departaments = _combosHelper.GetComboDepartaments();
             model.Cities = _combosHelper.GetComboCities(model.DepartamentId);
             model.Neighborhoods = _combosHelper.GetComboNeighborhoods(model.CityId);
-            
+
             return View(model);
         }
 
@@ -286,7 +284,7 @@ namespace HairApp.Web.Controllers
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 PhoneNumber = user.PhoneNumber,
-                ImageId = user.ImageId,                
+                ImageId = user.ImageId,
                 Cities = _combosHelper.GetComboCities(departament.Id),
                 CityId = city.Id,
                 Departaments = _combosHelper.GetComboDepartaments(),

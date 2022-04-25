@@ -4,14 +4,16 @@ using HairApp.Web.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace HairApp.Web.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220425000437_Cambiosp")]
+    partial class Cambiosp
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -174,11 +176,7 @@ namespace HairApp.Web.Migrations
 
                     b.Property<int>("ServiceTime");
 
-                    b.Property<int?>("ShopId");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("ShopId");
 
                     b.ToTable("Services");
                 });
@@ -199,15 +197,11 @@ namespace HairApp.Web.Migrations
 
                     b.Property<string>("Name");
 
-                    b.Property<int?>("NeighborhoodId");
-
                     b.Property<float>("StarCalification");
 
                     b.Property<string>("UserId");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("NeighborhoodId");
 
                     b.HasIndex("UserId");
 
@@ -448,19 +442,8 @@ namespace HairApp.Web.Migrations
                         .HasForeignKey("BookingHistoryId");
                 });
 
-            modelBuilder.Entity("HairApp.Web.Data.Entities.Service", b =>
-                {
-                    b.HasOne("HairApp.Web.Data.Entities.Shop")
-                        .WithMany("Services")
-                        .HasForeignKey("ShopId");
-                });
-
             modelBuilder.Entity("HairApp.Web.Data.Entities.Shop", b =>
                 {
-                    b.HasOne("HairApp.Common.Entities.Neighborhood", "Neighborhood")
-                        .WithMany()
-                        .HasForeignKey("NeighborhoodId");
-
                     b.HasOne("HairApp.Web.Data.Entities.User")
                         .WithMany("Shops")
                         .HasForeignKey("UserId");

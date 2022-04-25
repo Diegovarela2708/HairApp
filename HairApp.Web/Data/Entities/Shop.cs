@@ -14,7 +14,7 @@ namespace HairApp.Web.Data.Entities
         public string Description { get; set; }
         public bool IsActive { get; set; }
         public string Addrees { get; set; }
-        public Neighborhood Neighborhoods { get; set; }
+        public Neighborhood Neighborhood { get; set; }
         public float Balance { get; set; }
         public float StarCalification { get; set; }
         public ICollection<Service> Services { get; set; }

@@ -14,8 +14,8 @@ namespace HairApp.Common.Entities
         [MaxLength(50, ErrorMessage = "El {0} Barrio debe contener menos de {1} caracteres.")]
         [Required]
         [Display(Name = "Barrio")]
-        public string Name { get; set; }
-        
+        public string Name { get; set; }      
+
         [JsonIgnore]
         [NotMapped]
         public int IdCity { get; set; }
