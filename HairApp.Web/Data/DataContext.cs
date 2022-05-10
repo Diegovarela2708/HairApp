@@ -57,7 +57,7 @@ namespace HairApp.Web.Data
 
             modelBuilder.Entity<Shop>()
                 .HasIndex(t => t.Name)
-                .IsUnique();
+                .IsUnique();               
 
         }
     }

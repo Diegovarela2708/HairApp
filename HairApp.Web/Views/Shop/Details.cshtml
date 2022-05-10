@@ -135,6 +135,9 @@
                                 @Html.DisplayNameFor(model => model.Services.FirstOrDefault().Description)
                             </th>
                             <th>
+                                @Html.DisplayNameFor(model => model.Services.FirstOrDefault().ServiceTime)
+                            </th>
+                            <th>
                                 @Html.DisplayNameFor(model => model.Services.FirstOrDefault().IsActive)
                             </th>
                             <th></th>
@@ -143,21 +146,24 @@
                     <tbody>
                         @foreach (var item in Model.Services)
                         {
-                            <tr>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Name)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Description)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.IsActive)
-                                </td>
-                                <td>
-                                    <a asp-action="EditService" asp-route-id="@item.Id" class="btn btn-warning"><i class="glyphicon glyphicon-pencil"></i></a>
-                                    <button data-id="@item.Id" class="btn btn-danger deleteItem" data-toggle="modal" data-target="#deleteDialog"><i class="glyphicon glyphicon-trash"></i></button>
-                                </td>
-                            </tr>
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Description)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ServiceTime)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.IsActive)
+                            </td>
+                            <td>
+                                <a asp-action="EditService" asp-route-id="@item.Id" class="btn btn-warning"><i class="glyphicon glyphicon-pencil"></i></a>
+                                <button data-id="@item.Id" class="btn btn-danger deleteItem" data-toggle="modal" data-target="#deleteDialog"><i class="glyphicon glyphicon-trash"></i></button>
+                            </td>
+                        </tr>
                         }
                     </tbody>
                 </table>

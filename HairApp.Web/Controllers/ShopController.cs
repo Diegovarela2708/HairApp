@@ -202,7 +202,35 @@ namespace HairApp.Web.Controllers
             model.Neighborhoods = _combosHelper.GetComboNeighborhoods(0);
             return View(model);
         }
+        
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
+            Shop shop = await _context.Shops
+                .Include(p => p.ShopImages)
+                .FirstOrDefaultAsync(p => p.Id == id);
+            if (shop == null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                _context.Shops.Remove(shop);
+                await _context.SaveChangesAsync();
+                _flashMessage.Confirmation("Producto eliminado");
+            }
+            catch (Exception ex)
+            {
+                _flashMessage.Danger(string.Empty, ex.Message);
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
 
         public async Task<IActionResult> Details(int? id)
         {
@@ -223,8 +251,6 @@ namespace HairApp.Web.Controllers
 
             return View(shop);
         }
-
-
 
         public async Task<IActionResult> AddService(int? id)
         {
@@ -250,6 +276,37 @@ namespace HairApp.Web.Controllers
 
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public  async Task<IActionResult> AddService(ServiceViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                Shop shop = await _context.Shops
+                    .Include(p => p.Services)
+                    .FirstOrDefaultAsync(p => p.Id == model.ShopId);
+                try
+                {
+                    if (shop == null)
+                    {
+                        return NotFound();
+                    }
+
+                    shop.Services.Add( new Service { Name = model.Name, IsActive = model.IsActive,Description= model.Description,ServiceTime=model.ServiceTime });
+                    _context.Update(shop);
+                    await _context.SaveChangesAsync();
+                    _flashMessage.Confirmation("El componente se agrego exitosamente.");
+                    return RedirectToAction($"{nameof(Details)}/{shop.Id}");
+                }
+                catch (Exception exception)
+                {
+                    //Panel de contro
+                    ModelState.AddModelError(string.Empty, exception.Message);
+                }
+
+            }
+            return View(model);
+        }
         public async Task<IActionResult> EditService(int? id)
         {
             if (id == null)
@@ -266,7 +323,11 @@ namespace HairApp.Web.Controllers
 
             var model = new ServiceViewModel()
             {
-
+                Name = service.Name,
+                Description = service.Description,
+                IsActive = service.IsActive,
+                ServiceTime = service.ServiceTime,
+                Shop = service.Shop
             };
 
             return View(model);
