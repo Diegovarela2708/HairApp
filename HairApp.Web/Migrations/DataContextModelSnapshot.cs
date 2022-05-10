@@ -89,11 +89,7 @@ namespace HairApp.Web.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Addrees");
-
-                    b.Property<DateTime>("DateLocal");
-
-                    b.Property<int>("MyProperty");
+                    b.Property<DateTime>("Date");
 
                     b.Property<int?>("ServiceId");
 
@@ -121,8 +117,6 @@ namespace HairApp.Web.Migrations
                     b.Property<string>("Addrees");
 
                     b.Property<DateTime>("DateLocal");
-
-                    b.Property<int>("MyProperty");
 
                     b.Property<int?>("ServiceId");
 
@@ -206,6 +200,10 @@ namespace HairApp.Web.Migrations
                     b.Property<string>("UserId");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasFilter("[Name] IS NOT NULL");
 
                     b.HasIndex("NeighborhoodId");
 
@@ -291,6 +289,23 @@ namespace HairApp.Web.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
+                });
+
+            modelBuilder.Entity("HairApp.Web.Data.ShopImage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<Guid>("ImageId");
+
+                    b.Property<int?>("ShopId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ShopId");
+
+                    b.ToTable("ShopImages");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -421,7 +436,7 @@ namespace HairApp.Web.Migrations
 
             modelBuilder.Entity("HairApp.Web.Data.Entities.Booking", b =>
                 {
-                    b.HasOne("HairApp.Web.Data.Entities.Service")
+                    b.HasOne("HairApp.Web.Data.Entities.Service", "Service")
                         .WithMany("Bookings")
                         .HasForeignKey("ServiceId");
 
@@ -432,7 +447,7 @@ namespace HairApp.Web.Migrations
 
             modelBuilder.Entity("HairApp.Web.Data.Entities.BookingHistory", b =>
                 {
-                    b.HasOne("HairApp.Web.Data.Entities.Service")
+                    b.HasOne("HairApp.Web.Data.Entities.Service", "Service")
                         .WithMany("BookingHistories")
                         .HasForeignKey("ServiceId");
 
@@ -450,7 +465,7 @@ namespace HairApp.Web.Migrations
 
             modelBuilder.Entity("HairApp.Web.Data.Entities.Service", b =>
                 {
-                    b.HasOne("HairApp.Web.Data.Entities.Shop")
+                    b.HasOne("HairApp.Web.Data.Entities.Shop", "Shop")
                         .WithMany("Services")
                         .HasForeignKey("ShopId");
                 });
@@ -471,6 +486,13 @@ namespace HairApp.Web.Migrations
                     b.HasOne("HairApp.Common.Entities.Neighborhood", "Neighborhood")
                         .WithMany()
                         .HasForeignKey("NeighborhoodId");
+                });
+
+            modelBuilder.Entity("HairApp.Web.Data.ShopImage", b =>
+                {
+                    b.HasOne("HairApp.Web.Data.Entities.Shop")
+                        .WithMany("ShopImages")
+                        .HasForeignKey("ShopId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

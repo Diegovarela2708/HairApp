@@ -36,8 +36,8 @@ namespace HairApp.Web.Data.Entities
         //TODO: Direccion de Imagen
         [Display(Name = "Image")]
         public string ImageFullPath => ImageId == Guid.Empty
-        ? $"http://192.168.1.74/images/noimage.png"
-            : $"https://algamar.blob.core.windows.net/users/{ImageId}";
+        ? $"https://localhost:44352/images/noimage.png"
+            : $"https://hairapp.blob.core.windows.net/user/{ImageId}";
 
         [Display(Name = "User Type")]
         public UserType UserType { get; set; }

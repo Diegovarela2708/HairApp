@@ -32,7 +32,7 @@ namespace HairApp.Web.Controllers
             _userHelper = userHelper;
             _combosHelper = combosHelper;
             _blobHelper = blobHelper;
-            //_mailHelper = mailHelper;
+            _mailHelper = mailHelper;
             //_converterHelper = converterHelper;
             _flashMessage = flashMessage;
         }

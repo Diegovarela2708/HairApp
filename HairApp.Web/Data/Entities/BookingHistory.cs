@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace HairApp.Web.Data.Entities
@@ -12,6 +14,10 @@ namespace HairApp.Web.Data.Entities
         public User User { get; set; }
         public char Status { get; set; }
         public string Addrees { get; set; }
-        public int MyProperty { get; set; }       
+        [JsonIgnore]
+        [NotMapped]
+        public int IdService { get; set; }
+        [JsonIgnore]
+        public Service Service { get; set; }
     }
 }

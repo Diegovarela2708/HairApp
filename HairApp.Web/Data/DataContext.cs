@@ -21,7 +21,8 @@ namespace HairApp.Web.Data
         public DbSet<Rate> Rates { get; set; }
         public DbSet<Service> Services { get; set; }
         public DbSet<Shop> Shops { get; set; }
-        
+
+        public DbSet<ShopImage> ShopImages { get; set; }
 
 
 
@@ -54,7 +55,10 @@ namespace HairApp.Web.Data
             .HasIndex(t => t.Document)
             .IsUnique();
 
-            
+            modelBuilder.Entity<Shop>()
+                .HasIndex(t => t.Name)
+                .IsUnique();
+
         }
     }
 

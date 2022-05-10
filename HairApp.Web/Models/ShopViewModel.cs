@@ -1,4 +1,5 @@
 ﻿using HairApp.Web.Data.Entities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
@@ -28,5 +29,8 @@ namespace HairApp.Web.Models
         [Range(1, int.MaxValue, ErrorMessage = "Debe seleccionar un barrio.")]
         public int NeighborhoodId { get; set; }
         public IEnumerable<SelectListItem> Neighborhoods { get; set; }
+
+        [Display(Name = "Image")]
+        public IFormFile ImageFile { get; set; }
     }
 }

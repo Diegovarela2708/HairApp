@@ -30,9 +30,24 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
-                    <li><a asp-area="" asp-controller="Shop" asp-action="Index">Tiendas</a></li>
+                    @if (User.Identity.IsAuthenticated && User.IsInRole("Admin") || User.Identity.IsAuthenticated && User.IsInRole("SuperAdmin"))
+                    {
+                        <li><a asp-area="" asp-controller="Shop" asp-action="Index">Tiendas</a></li>
+                        <li><a asp-area="" asp-controller="Booking" asp-action="Index">Reservas</a></li>
+
+                    }
+                    else if (User.Identity.IsAuthenticated && User.IsInRole("Usuario"))
+                    {
+                        <li><a asp-area="" asp-controller="Booking" asp-action="Index">Reservas</a></li>
+                        <li><a asp-area="" asp-controller="" asp-action="">Tiendas</a></li>
+                    }
+                    else
+                    {
+                        <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
+                        <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+                    }
+
+
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     @if (User.Identity.IsAuthenticated)

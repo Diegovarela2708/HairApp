@@ -1,0 +1,49 @@
+﻿@model HairApp.Web.Models.ServiceViewModel
+
+@{
+    ViewData["Title"] = "Add Services";
+}
+
+<h2>Editar</h2>
+<h4>Servicio</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="EditService" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ShopId" />
+
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" disabled />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <textarea asp-for="Description" class="form-control" disabled></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ServiceTime" class="control-label"></label>
+                <input asp-for="ServiceTime" class="form-control" />
+                <span asp-validation-for="ServiceTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input asp-for="IsActive" /> @Html.DisplayNameFor(model => model.IsActive)
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Agregar" class="btn btn-primary" />
+                <a asp-action="Details" asp-route-id="@Model.Shop.Id" class="btn btn-success">Atrás</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

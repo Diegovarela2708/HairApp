@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace HairApp.Web.Migrations
 {
-    public partial class BDInicial : Migration
+    public partial class DBInicial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -220,6 +220,159 @@ namespace HairApp.Web.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Shops",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(nullable: true),
+                    IsActive = table.Column<bool>(nullable: false),
+                    Addrees = table.Column<string>(nullable: true),
+                    NeighborhoodId = table.Column<int>(nullable: true),
+                    Balance = table.Column<float>(nullable: false),
+                    StarCalification = table.Column<float>(nullable: false),
+                    UserId = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Shops", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Shops_Neighborhoods_NeighborhoodId",
+                        column: x => x.NeighborhoodId,
+                        principalTable: "Neighborhoods",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Shops_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Services",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(nullable: true),
+                    ServiceTime = table.Column<int>(nullable: false),
+                    IsActive = table.Column<bool>(nullable: false),
+                    ShopId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Services", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Services_Shops_ShopId",
+                        column: x => x.ShopId,
+                        principalTable: "Shops",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ShopImages",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    ImageId = table.Column<Guid>(nullable: false),
+                    ShopId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ShopImages", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ShopImages_Shops_ShopId",
+                        column: x => x.ShopId,
+                        principalTable: "Shops",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BookingHistories",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    DateLocal = table.Column<DateTime>(nullable: false),
+                    UserId = table.Column<string>(nullable: true),
+                    Status = table.Column<string>(nullable: false),
+                    Addrees = table.Column<string>(nullable: true),
+                    ServiceId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BookingHistories", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_BookingHistories_Services_ServiceId",
+                        column: x => x.ServiceId,
+                        principalTable: "Services",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_BookingHistories_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Bookings",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Date = table.Column<DateTime>(nullable: false),
+                    UserId = table.Column<string>(nullable: true),
+                    Status = table.Column<string>(nullable: false),
+                    ServiceId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Bookings", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Bookings_Services_ServiceId",
+                        column: x => x.ServiceId,
+                        principalTable: "Services",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Bookings_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Rates",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Score = table.Column<float>(nullable: false),
+                    Description = table.Column<string>(nullable: true),
+                    BookingHistoryId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Rates", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Rates_BookingHistories_BookingHistoryId",
+                        column: x => x.BookingHistoryId,
+                        principalTable: "BookingHistories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -271,6 +424,26 @@ namespace HairApp.Web.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_BookingHistories_ServiceId",
+                table: "BookingHistories",
+                column: "ServiceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BookingHistories_UserId",
+                table: "BookingHistories",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Bookings_ServiceId",
+                table: "Bookings",
+                column: "ServiceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Bookings_UserId",
+                table: "Bookings",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Cities_DepartamentId",
                 table: "Cities",
                 column: "DepartamentId");
@@ -299,6 +472,38 @@ namespace HairApp.Web.Migrations
                 columns: new[] { "Name", "CityId" },
                 unique: true,
                 filter: "[CityId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Rates_BookingHistoryId",
+                table: "Rates",
+                column: "BookingHistoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Services_ShopId",
+                table: "Services",
+                column: "ShopId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ShopImages_ShopId",
+                table: "ShopImages",
+                column: "ShopId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Shops_Name",
+                table: "Shops",
+                column: "Name",
+                unique: true,
+                filter: "[Name] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Shops_NeighborhoodId",
+                table: "Shops",
+                column: "NeighborhoodId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Shops_UserId",
+                table: "Shops",
+                column: "UserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -319,7 +524,25 @@ namespace HairApp.Web.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Bookings");
+
+            migrationBuilder.DropTable(
+                name: "Rates");
+
+            migrationBuilder.DropTable(
+                name: "ShopImages");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "BookingHistories");
+
+            migrationBuilder.DropTable(
+                name: "Services");
+
+            migrationBuilder.DropTable(
+                name: "Shops");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

@@ -79,7 +79,7 @@ namespace HairApp.Web
 
             services.AddTransient<SeedDb>();
             services.AddScoped<IBlobHelper, BlobHelper>();
-            //services.AddScoped<IConverterHelper, ConverterHelper>();
+            services.AddScoped<IConverterHelper, ConverterHelper>();
             services.AddScoped<ICombosHelper, CombosHelper>();
             services.AddScoped<IUserHelper, UserHelper>();
             services.AddScoped<IMailHelper, MailHelper>();

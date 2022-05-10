@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace HairApp.Web.Data.Entities
@@ -16,6 +18,12 @@ namespace HairApp.Web.Data.Entities
         public int BookingsNumber => Bookings == null ? 0 : Bookings.Count;
         public ICollection<BookingHistory> BookingHistories { get; set; }
         public int BookingHistoriesNumber => BookingHistories == null ? 0 : BookingHistories.Count;
+
+        [JsonIgnore]
+        [NotMapped]
+        public int IdShop { get; set; }
+        [JsonIgnore]
+        public Shop Shop { get; set; }
 
     }
 }
