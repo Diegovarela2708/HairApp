@@ -329,12 +329,40 @@ namespace HairApp.Web.Controllers
                 ServiceTime = service.ServiceTime,
                 Shop = service.Shop
             };
-
             return View(model);
-
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditService(ServiceViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                Service service = await _context.Services
+                    .Include(s => s.Shop)
+                    .FirstOrDefaultAsync(p => p.Id == model.Id);
+                try
+                {
+                    if (service == null)
+                    {
+                        return NotFound();
+                    }
 
+                    service.ServiceTime = model.ServiceTime;
+                    service.IsActive = model.IsActive;
+                    _context.Update(service);
+                    await _context.SaveChangesAsync();
+                    _flashMessage.Confirmation("El componente se agrego exitosamente.");
+                    return RedirectToAction($"{nameof(Details)}/{service.Shop.Id}");
+                }
+                catch (Exception exception)
+                {
+                    //Panel de contro
+                    ModelState.AddModelError(string.Empty, exception.Message);
+                }
 
+            }
+            return View(model);
+        }
         public JsonResult GetCities(int departamentId)
         {
             Departament departament = _context.Departaments
