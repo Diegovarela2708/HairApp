@@ -5,6 +5,7 @@ using HairApp.Web.Data;
 using HairApp.Web.Data.Entities;
 using HairApp.Web.Helpers;
 using HairApp.Web.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -38,12 +39,12 @@ namespace HairApp.Web.Controllers
         }
 
 
-        public async Task<IActionResult> Index()
-        {
-            return View(await _context.Users
-                .Include(u => u.Neighborhood)
-                .ToListAsync());
-        }
+        //public async Task<IActionResult> Index()
+        //{
+        //    return View(await _context.Users
+        //        .Include(u => u.Neighborhood)
+        //        .ToListAsync());
+        //}
 
 
         [HttpGet]
@@ -335,301 +336,117 @@ namespace HairApp.Web.Controllers
             return View(model);
         }
 
-        //public IActionResult ChangePasswordMVC()
-        //{
-        //    return View();
-        //}
+        public IActionResult ChangePasswordMVC()
+        {
+            return View();
+        }
 
-        //[HttpPost]
-        //public async Task<IActionResult> ChangePasswordMVC(ChangePasswordViewModel model)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        var user = await _userHelper.GetUserAsync(User.Identity.Name);
-        //        if (user != null)
-        //        {
-        //            var result = await _userHelper.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
-        //            if (result.Succeeded)
-        //            {
-        //                return RedirectToAction("ChangeUser");
-        //            }
-        //            else
-        //            {
-        //                ModelState.AddModelError(string.Empty, result.Errors.FirstOrDefault().Description);
-        //            }
-        //        }
-        //        else
-        //        {
-        //            ModelState.AddModelError(string.Empty, "User no found.");
-        //        }
-        //    }
+        [HttpPost]
+        public async Task<IActionResult> ChangePasswordMVC(ChangePasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userHelper.GetUserAsync(User.Identity.Name);
+                if (user != null)
+                {
+                    var result = await _userHelper.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+                    if (result.Succeeded)
+                    {
+                        return RedirectToAction("ChangeUser");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, result.Errors.FirstOrDefault().Description);
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "User no found.");
+                }
+            }
 
-        //    return View(model);
-        //}
-        //public async Task<IActionResult> ConfirmEmail(string userId, string token)
-        //{
-        //    if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(token))
-        //    {
-        //        return NotFound();
-        //    }
+            return View(model);
+        }
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        {
+            if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(token))
+            {
+                return NotFound();
+            }
 
-        //    User user = await _userHelper.GetUserAsync(new Guid(userId));
-        //    if (user == null)
-        //    {
-        //        return NotFound();
-        //    }
+            User user = await _userHelper.GetUserAsync(new Guid(userId));
+            if (user == null)
+            {
+                return NotFound();
+            }
 
-        //    IdentityResult result = await _userHelper.ConfirmEmailAsync(user, token);
-        //    if (!result.Succeeded)
-        //    {
-        //        return NotFound();
-        //    }
+            IdentityResult result = await _userHelper.ConfirmEmailAsync(user, token);
+            if (!result.Succeeded)
+            {
+                return NotFound();
+            }
 
-        //    return View();
-        //}
+            return View();
+        }
 
-        //public IActionResult RecoverPasswordMVC()
-        //{
-        //    return View();
-        //}
+        public IActionResult RecoverPasswordMVC()
+        {
+            return View();
+        }
 
-        //[HttpPost]
-        //public async Task<IActionResult> RecoverPasswordMVC(RecoverPasswordViewModel model)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        User user = await _userHelper.GetUserAsync(model.Email);
-        //        if (user == null)
-        //        {
-        //            ModelState.AddModelError(string.Empty, "The email doesn't correspont to a registered user.");
-        //            return View(model);
-        //        }
+        [HttpPost]
+        public async Task<IActionResult> RecoverPasswordMVC(RecoverPasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                User user = await _userHelper.GetUserAsync(model.Email);
+                if (user == null)
+                {
+                    ModelState.AddModelError(string.Empty, "The email doesn't correspont to a registered user.");
+                    return View(model);
+                }
 
-        //        string myToken = await _userHelper.GeneratePasswordResetTokenAsync(user);
-        //        string link = Url.Action(
-        //            "ResetPassword",
-        //            "Account",
-        //            new { token = myToken }, protocol: HttpContext.Request.Scheme);
-        //        _mailHelper.SendMail(model.Email,"","", "Password Reset", $"<h1>Password Reset</h1>" +
-        //            $"To reset the password click in this link:</br></br>" +
-        //            $"<a href = \"{link}\">Reset Password</a>");
-        //        ViewBag.Message = "The instructions to recover your password has been sent to email.";
-        //        return View();
+                string myToken = await _userHelper.GeneratePasswordResetTokenAsync(user);
+                string link = Url.Action(
+                    "ResetPassword",
+                    "Account",
+                    new { token = myToken }, protocol: HttpContext.Request.Scheme);
+                _mailHelper.SendMail(model.Email,"Password Reset", $"<h1>Password Reset</h1>" +
+                    $"To reset the password click in this link:</br></br>" +
+                    $"<a href = \"{link}\">Reset Password</a>");
+                ViewBag.Message = "The instructions to recover your password has been sent to email.";
+                return View();
 
-        //    }
+            }
 
-        //    return View(model);
-        //}
+            return View(model);
+        }
 
-        //public IActionResult ResetPassword(string token)
-        //{
-        //    return View();
-        //}
+        public IActionResult ResetPassword(string token)
+        {
+            return View();
+        }
 
-        //[HttpPost]
-        //public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
-        //{
-        //    User user = await _userHelper.GetUserAsync(model.UserName);
-        //    if (user != null)
-        //    {
-        //        IdentityResult result = await _userHelper.ResetPasswordAsync(user, model.Token, model.Password);
-        //        if (result.Succeeded)
-        //        {
-        //            ViewBag.Message = "Password reset successful.";
-        //            return View();
-        //        }
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            User user = await _userHelper.GetUserAsync(model.UserName);
+            if (user != null)
+            {
+                IdentityResult result = await _userHelper.ResetPasswordAsync(user, model.Token, model.Password);
+                if (result.Succeeded)
+                {
+                    ViewBag.Message = "Password reset successful.";
+                    return View();
+                }
 
-        //        ViewBag.Message = "Error while resetting the password.";
-        //        return View(model);
-        //    }
+                ViewBag.Message = "Error while resetting the password.";
+                return View(model);
+            }
 
-        //    ViewBag.Message = "User not found.";
-        //    return View(model);
-        //}
-
-
-        //public async Task<IActionResult> Details(string  id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var user = await _context.Users
-        //        .Include(u=> u.Products)
-        //        .ThenInclude(p=>p.Category)
-        //        .Include(u => u.Products)
-        //        .ThenInclude(p => p.Histories)
-        //        .Include(u => u.Products)
-        //        .ThenInclude(p => p.ProductImages)
-        //        .FirstOrDefaultAsync(u => u.Id == id);
-
-        //    if (user == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(user);
-        //}
-
-
-        //public async Task<IActionResult> DetailsProduct(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var product = await _context.Products
-        //        .Include(p => p.User)
-        //        .Include(p => p.Histories)
-        //        .ThenInclude(h => h.ServiceType)
-        //        .Include(p=>p.ProductImages)
-        //        .Include(p=>p.Category)
-        //        .FirstOrDefaultAsync(p => p.Id == id.Value);
-
-        //    if (product == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(product);
-        //}
-        //public async Task<IActionResult> AddHistory(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var pet = await _context.Products.FindAsync(id.Value);
-        //    if (pet == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var model = new HistoryViewModel
-        //    {
-        //        Date = Convert.ToDateTime(DateTime.Now.ToString("yyyy/MM/dd HH:mm")),
-        //        ProductId = pet.Id,
-        //        ServiceTypes = _combosHelper.GetComboServiceTypes(),
-        //    };
-
-        //    return View(model);
-        //}
-
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> AddHistory(HistoryViewModel model)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        var history = await _converterHelper.ToHistoryAsync(model, true);
-        //        _context.Histories.Add(history);
-        //        await _context.SaveChangesAsync();
-        //        _flashMessage.Confirmation("Historia del Producto creada.");
-        //        return RedirectToAction($"{nameof(DetailsProduct)}/{model.ProductId}");
-        //    }
-        //    model.ServiceTypes = _combosHelper.GetComboServiceTypes();
-        //    return View(model);
-        //}
-
-        //public async Task<IActionResult> EditHistory(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var history = await _context.Histories
-        //        .Include(h => h.Product)
-        //        .Include(h => h.ServiceType)
-        //        .FirstOrDefaultAsync(h => h.Id == id.Value);
-        //    if (history == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(_converterHelper.ToHistoryViewModel(history));
-        //}
-
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> EditHistory(HistoryViewModel model)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        var history = await _converterHelper.ToHistoryAsync(model, false);
-        //        _context.Histories.Update(history);
-        //        await _context.SaveChangesAsync();
-        //        _flashMessage.Confirmation("Cambios guardados.");
-        //        return RedirectToAction($"{nameof(DetailsProduct)}/{model.ProductId}");
-        //    }
-        //    model.ServiceTypes = _combosHelper.GetComboServiceTypes();
-        //    return View(model);
-        //}
-
-        //public async Task<IActionResult> DeleteHistory(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var history = await _context.Histories
-        //        .Include(h => h.Product)
-        //        .FirstOrDefaultAsync(h => h.Id == id.Value);
-        //    if (history == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    _context.Histories.Remove(history);
-        //    await _context.SaveChangesAsync();
-        //    _flashMessage.Confirmation("Historia eliminada.");
-        //    return RedirectToAction($"{nameof(DetailsProduct)}/{history.Product.Id}");
-        //}
-
-        //public async Task<IActionResult> DeleteProduct(int? id)
-        //{
-        //    var product = await _context.Products
-        //            .Include(p => p.User)
-        //            .Include(p => p.Histories)
-        //            .Include(p => p.ProductImages)
-        //            .FirstOrDefaultAsync(p => p.Id == id.Value);
-
-        //    try
-        //    {
-        //        if (id == null)
-        //        {
-        //            return NotFound();
-        //        }
-
-        //        if (product == null)
-        //        {
-        //            return NotFound();
-        //        }
-
-        //        if (product.Histories.Count > 0)
-        //        {
-        //            _flashMessage.Danger("The product can't be deleted because it has related records.");
-        //            return RedirectToAction($"{nameof(Details)}/{product.User.Id}");
-        //        }
-
-        //        _context.Products.Remove(product);
-        //        await _context.SaveChangesAsync();
-        //        _flashMessage.Confirmation("Producto Eliminado.");
-        //        return RedirectToAction($"{nameof(Details)}/{product.User.Id}");
-        //    }
-        //    catch (Exception ex)
-        //    {
-
-        //        _flashMessage.Danger(ex.Message);
-
-        //    }
-        //    return RedirectToAction($"{nameof(Details)}/{product.User.Id}");
-
-        //}
+            ViewBag.Message = "User not found.";
+            return View(model);
+        }
     }
 
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text.Json.Serialization;
@@ -10,9 +11,14 @@ namespace HairApp.Web.Data.Entities
     public class Service
     {
         public int Id { get; set; }
+
+        [Display(Name = "Nombre Servicio")]
         public string Name { get; set; }
+        [Display(Name = "Descripción")]
         public string Description { get; set; }
+        [Display(Name = "Tiempo del servicio")]
         public int ServiceTime { get; set; }
+        [Display(Name = "Activo")]
         public bool IsActive { get; set; }
         public ICollection<Booking> Bookings { get; set; }
         public int BookingsNumber => Bookings == null ? 0 : Bookings.Count;

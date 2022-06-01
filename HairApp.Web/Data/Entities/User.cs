@@ -28,7 +28,7 @@ namespace HairApp.Web.Data.Entities
         [MaxLength(100)]
         public string Address { get; set; }
 
-        [Display(Name = "Image")]
+        [Display(Name = "Foto")]
         public Guid ImageId { get; set; }
 
         [DisplayName("Activo")]
@@ -39,9 +39,10 @@ namespace HairApp.Web.Data.Entities
         ? $"https://localhost:44352/images/noimage.png"
             : $"https://hairapp.blob.core.windows.net/user/{ImageId}";
 
-        [Display(Name = "User Type")]
+        [Display(Name = "Tipo Usuario")]
         public UserType UserType { get; set; }
-        
+
+        [Display(Name = "Barrio")]
         public Neighborhood Neighborhood { get; set; }
 
         [Display(Name = "Nombre Completo")]
@@ -51,6 +52,7 @@ namespace HairApp.Web.Data.Entities
         public string FullNameWithDocument => $"{FirstName} {LastName} - {Document}";
 
         public ICollection<Shop> Shops { get; set; }
+        [Display(Name = "Numero Tiendas")]
         public int ShopsNumber => Shops == null ? 0 : Shops.Count;
 
     }

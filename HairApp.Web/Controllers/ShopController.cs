@@ -1,4 +1,5 @@
 ﻿using HairApp.Common.Entities;
+using HairApp.Common.Entities.Enums;
 using HairApp.Common.Enums;
 using HairApp.Common.Responses;
 using HairApp.Web.Data;
@@ -38,25 +39,46 @@ namespace HairApp.Web.Controllers
             _flashMessage = flashMessage;
         }
 
+        [Authorize(Roles = "SuperAdmin,Admin,Usuario")]
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Shops
-                .Include(s=>s.Neighborhood)
-                .Include(s=>s.Services)
+            User user = await _userHelper.GetUserAsync(User.Identity.Name);
+
+            if (user.UserType == 0)
+            {
+                return View(await _context.Shops
+                .Include(s => s.Neighborhood)
+                .Include(s => s.Services)
                 .ToListAsync());
+            }
+            else if ((int)user.UserType == 1)
+            {
+                return View(await _context.Shops
+                .Include(s => s.Neighborhood)
+                .Include(s => s.Services)
+                .Where(p => p.User.Id == user.Id)
+                .ToListAsync());
+            }
+            else
+            {
+                return View(await _context.Shops
+               .Include(s => s.Neighborhood)
+               .Include(s => s.Services)
+               .Where(p => p.Neighborhood.Id == user.Neighborhood.Id)
+               .ToListAsync());
+            }
+           
         }
 
+        [Authorize(Roles = "User,Admin")]
         public IActionResult Create()
         {
             ShopViewModel model = new ShopViewModel
             {
-
                 Departaments = _combosHelper.GetComboDepartaments(),
                 Cities = _combosHelper.GetComboCities(0),
                 Neighborhoods = _combosHelper.GetComboNeighborhoods(0)
-
             };
-
             return View(model);
         }
 
@@ -106,7 +128,7 @@ namespace HairApp.Web.Controllers
             model.Neighborhoods = _combosHelper.GetComboNeighborhoods(0);
             return View(model);
         }
-
+        [Authorize(Roles = "SuperAdmin,Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             try
@@ -202,7 +224,7 @@ namespace HairApp.Web.Controllers
             model.Neighborhoods = _combosHelper.GetComboNeighborhoods(0);
             return View(model);
         }
-        
+        [Authorize(Roles = "SuperAdmin,Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -231,7 +253,7 @@ namespace HairApp.Web.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-
+        [Authorize(Roles = "SuperAdmin,Admin,Usuario")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -251,7 +273,7 @@ namespace HairApp.Web.Controllers
 
             return View(shop);
         }
-
+        [Authorize(Roles = "SuperAdmin,Admin")]
         public async Task<IActionResult> AddService(int? id)
         {
             if (id == null)
@@ -275,7 +297,6 @@ namespace HairApp.Web.Controllers
             return View(model);
 
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public  async Task<IActionResult> AddService(ServiceViewModel model)
@@ -296,7 +317,7 @@ namespace HairApp.Web.Controllers
                     _context.Update(shop);
                     await _context.SaveChangesAsync();
                     _flashMessage.Confirmation("El componente se agrego exitosamente.");
-                    return RedirectToAction($"{nameof(Details)}/{shop.Id}");
+                    return RedirectToAction($"{nameof(Details)}"+"/"+$"{shop.Id}");
                 }
                 catch (Exception exception)
                 {
@@ -307,6 +328,7 @@ namespace HairApp.Web.Controllers
             }
             return View(model);
         }
+        [Authorize(Roles = "SuperAdmin,Admin")]
         public async Task<IActionResult> EditService(int? id)
         {
             if (id == null)
@@ -375,7 +397,6 @@ namespace HairApp.Web.Controllers
 
             return Json(departament.Cities.OrderBy(d => d.Name));
         }
-
         public JsonResult GetNeighborhoods(int cityId)
         {
             City city = _context.Cities
@@ -387,6 +408,52 @@ namespace HairApp.Web.Controllers
             }
 
             return Json(city.Neighborhoods.OrderBy(c => c.Name));
+        }
+
+        public IActionResult Booking()
+        {
+            BookingViewModel model = new BookingViewModel
+            {
+                
+            };
+            return View(model);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Booking(BookingViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                Service service = await _context.Services.FirstOrDefaultAsync(s => s.Id == model.Id);
+                model.Status = (char)StatusServices.Reservado;
+                model.Service = service;
+                User user = await _userHelper.GetUserAsync(User.Identity.Name);
+                try
+                {
+                    Booking booking = await _converterHelper.ToBookingAsync(model, true, user);
+                    
+                    //booking.User = user;
+                    _context.Add(booking);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateException dbUpdateException)
+                {
+                    if (dbUpdateException.InnerException.Message.Contains("duplicate"))
+                    {
+                        ModelState.AddModelError(string.Empty, "There are a record with the same name.");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    ModelState.AddModelError(string.Empty, exception.Message);
+                }
+            }          
+            return View(model);
         }
     }
 }

@@ -26,6 +26,26 @@ namespace HairApp.Web.Helpers
 
         }
 
+        public async Task<Booking> ToBookingAsync(BookingViewModel model, bool isNew, User user)
+        {
+            return new Booking
+            {
+                Id = isNew ? 0 : model.Id,
+                Date = model.DateLocal,
+                EndDate = model.DateLocal.AddMinutes(model.Service.ServiceTime),
+                IdService = model.IdService,
+                Service = model.Service,
+                Status = model.Status,
+                User = user
+
+            };
+        }
+
+        public ShopViewModel ToBookingViewModel(Booking booking)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<Shop> ToShopAsync(ShopViewModel model, bool isNew, User user)
         {
             return new Shop

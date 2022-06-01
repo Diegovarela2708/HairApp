@@ -1,6 +1,4 @@
-﻿
-
-using HairApp.Common.Entities;
+﻿using HairApp.Common.Entities;
 using HairApp.Web.Data.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;

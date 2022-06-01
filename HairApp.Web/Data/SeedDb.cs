@@ -30,7 +30,11 @@ namespace HairApp.Web.Data
             await _context.Database.EnsureCreatedAsync();
             await CheckDepartamentAsync();            
             await CheckRolesAsync();
-            await CheckUserAsync("1119217542", "Diego Fdo", "Alvarez Varela", "auxsistemas@algamar.com.co", "3107962912", "Pendiente87", UserType.SuperAdmin, true, "123456");
+            await CheckUserAsync("1119217542", "Diego Fdo", "Alvarez Varela", "varela1044@gmail.com", "3107962912", "Direccion 1", UserType.SuperAdmin, true, "123456");
+            await CheckUserAsync("1005860606", "Jhoan Sebastian", "Castillo", "sebati0908@gmail.com", "3107962912", "Direccion 2", UserType.SuperAdmin, true, "123456");
+            await CheckUserAsync("1017180031", "Juan David", "Alvarez", "juandavid1990@gmail.com", "3107962912", "Direccion 5", UserType.SuperAdmin, true, "123456");
+            await CheckUserAsync("12346789", "Usuario", "Usuario", "usuario@gmail.com", "3107962912", "Direccion 3", UserType.Usuario, true, "123456");
+            await CheckUserAsync("123467810", "tendero", "tendero", "tendero@gmail.com", "3107962912", "Direccion 4", UserType.Admin, true, "123456");
 
         }
 

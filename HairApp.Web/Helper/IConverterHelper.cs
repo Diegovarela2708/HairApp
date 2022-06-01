@@ -14,6 +14,10 @@ namespace HairApp.Web.Helpers
 
         ShopViewModel ToShopViewModel(Shop shop, City city, Departament departament);
 
+        Task<Booking> ToBookingAsync(BookingViewModel model, bool isNew, User user);
+
+        ShopViewModel ToBookingViewModel(Booking booking);
+
         //Category ToCategory(CategoryViewModel model, Guid imageId, bool isNew);
 
         //CategoryViewModel ToCategoryViewModel(Category category);

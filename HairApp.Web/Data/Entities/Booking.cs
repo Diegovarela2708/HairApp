@@ -18,6 +18,12 @@ namespace HairApp.Web.Data.Entities
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm}")]
         [Display(Name = "Fecha")]
         public DateTime DateLocal => Date.ToLocalTime();
+
+        [Display(Name ="Fecha Fin")]
+        public DateTime EndDate { get; set; }
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm}")]
+        [Display(Name = "Fecha Fin")]
+        public DateTime EndDateLocal => EndDate.ToLocalTime();
         public User User { get; set; }
         public char Status { get; set; }                
 
