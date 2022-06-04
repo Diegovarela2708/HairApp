@@ -19,6 +19,9 @@
                     <thead>
                         <tr>
                             <th>
+                                @Html.DisplayNameFor(model => model.Id)
+                            </th>
+                            <th>
                                 @Html.DisplayNameFor(model => model.DateLocal)
                             </th>
                             <th>
@@ -44,6 +47,9 @@
                         {
                         <tr>
                             <td>
+                                @Html.DisplayFor(modelItem => item.Id)
+                            </td>
+                            <td>
                                 @Html.DisplayFor(modelItem => item.DateLocal)
                             </td>
                             <td>
@@ -65,13 +71,13 @@
                                     En la Sala
                                 </td>
                             }
-                            else if (item.Status == 'S')
+                            else if (item.Status == 'P')
                             {
                                 <td>
                                     En Proceso
                                 </td>
                             }
-                            else if (item.Status == 'S')
+                            else if (item.Status == 'T')
                             {
                                 <td>
                                     Terminado
@@ -91,8 +97,30 @@
                                 @Html.DisplayFor(modelItem => item.Service.Shop.Name)
                             </td>
                             <td>
-                                <a asp-action="#" asp-route-id="@item.Id" class="btn btn-warning"><i class="glyphicon glyphicon-hourglass"></i></a>
-                                <a asp-action="#" asp-route-id="@item.Id" class="btn btn-danger"><i class="glyphicon glyphicon-thumbs-down"></i></a>                                
+                                @if (User.IsInRole("Usuario"))
+                                {
+                                    if (item.Status == 'R')
+                                    {
+                                        <a asp-action="ChangeStatus" asp-route-id="@item.Id,S" class="btn btn-warning" title="En la Sala"><i class="glyphicon glyphicon-time" title="En la Sala"></i></a>
+                                        <a asp-action="ChangeStatus" asp-route-id="@item.Id,C" class="btn btn-danger" title="Cancelar"><i class="glyphicon glyphicon-thumbs-down" title="Cancelar"></i></a>
+                                    }
+                                    else if (item.Status == 'S')
+                                    {
+                                        <a asp-action="ChangeStatus" asp-route-id="@item.Id,C" class="btn btn-danger" title="Cancelar"><i class="glyphicon glyphicon-thumbs-down" title="Cancelar"></i></a>
+                                    }
+
+                                }
+                                else
+                                {
+                                    if (item.Status == 'S')
+                                    {
+                                        <a asp-action="ChangeStatus" asp-route-id="@item.Id,P" class="btn btn-danger" title="En Proceso"><i class="glyphicon glyphicon-scale" title="En Proceso"></i></a>
+                                    }
+                                    else if (item.Status == 'P')
+                                    {
+                                        <a asp-action="ChangeStatus" asp-route-id="@item.Id,T" class="btn btn-success" title="Finazalizar"><i class="glyphicon glyphicon-ok" title="Finalizar"></i></a>
+                                    }
+                                }
                             </td>
                         </tr>
                         }

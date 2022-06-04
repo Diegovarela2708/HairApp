@@ -316,7 +316,7 @@ namespace HairApp.Web.Controllers
                     shop.Services.Add( new Service { Name = model.Name, IsActive = model.IsActive,Description= model.Description,ServiceTime=model.ServiceTime });
                     _context.Update(shop);
                     await _context.SaveChangesAsync();
-                    _flashMessage.Confirmation("El componente se agrego exitosamente.");
+                    _flashMessage.Confirmation("El servicio se agrego exitosamente.");
                     return RedirectToAction($"{nameof(Details)}"+"/"+$"{shop.Id}");
                 }
                 catch (Exception exception)
@@ -373,7 +373,7 @@ namespace HairApp.Web.Controllers
                     service.IsActive = model.IsActive;
                     _context.Update(service);
                     await _context.SaveChangesAsync();
-                    _flashMessage.Confirmation("El componente se agrego exitosamente.");
+                    _flashMessage.Confirmation("El componente se edito exitosamente.");
                     return RedirectToAction($"{nameof(Details)}/{service.Shop.Id}");
                 }
                 catch (Exception exception)
@@ -414,7 +414,7 @@ namespace HairApp.Web.Controllers
         {
             BookingViewModel model = new BookingViewModel
             {
-                
+                Date = Convert.ToDateTime(DateTime.Now.ToString("yyyy/MM/dd HH:mm"))
             };
             return View(model);
         }
@@ -431,7 +431,27 @@ namespace HairApp.Web.Controllers
                 try
                 {
                     Booking booking = await _converterHelper.ToBookingAsync(model, true, user);
-                    
+
+
+                    var bookingDate = await _context.Bookings
+                        .Include(b=>b.Service)
+                        .Where(a => a.EndDate >= booking.Date && a.Date <= booking.EndDate && a.Service.Id == booking.Service.Id)
+                        .FirstOrDefaultAsync();
+                    DateTime today = Convert.ToDateTime(DateTime.Now.ToString("yyyy/MM/dd HH:mm"));
+
+                    int Prueba = today.CompareTo(booking.DateLocal);
+
+                    if (true)
+                    {
+                        _flashMessage.Warning("Verifique la fecha.");
+                        return View(model);
+                    }
+                    else if (bookingDate != null)
+                    {
+                        _flashMessage.Warning("La fecha no esta disponible.");
+                        return View(model);
+                    }
+
                     //booking.User = user;
                     _context.Add(booking);
                     await _context.SaveChangesAsync();

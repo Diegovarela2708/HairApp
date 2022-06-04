@@ -12,7 +12,7 @@ namespace HairApp.Web.Data.Entities
     public class Booking
     {
         public int Id { get; set; }
-        [Display(Name = "Fecha")]
+        [Display(Name = "Fecha")]        
         public DateTime Date { get; set; }
 
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm}")]
@@ -25,6 +25,7 @@ namespace HairApp.Web.Data.Entities
         [Display(Name = "Fecha Fin")]
         public DateTime EndDateLocal => EndDate.ToLocalTime();
         public User User { get; set; }
+        [Display(Name = "Estado")]
         public char Status { get; set; }                
 
         [JsonIgnore]

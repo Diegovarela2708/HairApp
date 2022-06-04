@@ -34,12 +34,14 @@
                     {
                         <li><a asp-area="" asp-controller="Shop" asp-action="Index">Tiendas</a></li>
                         <li><a asp-area="" asp-controller="Booking" asp-action="Index">Reservas</a></li>
+                        <li><a asp-area="" asp-controller="BookingHistory" asp-action="Index">Historia</a></li>
 
                     }
                     else if (User.Identity.IsAuthenticated && User.IsInRole("Usuario"))
                     {
                         <li><a asp-area="" asp-controller="Booking" asp-action="Index">Reservas</a></li>
                         <li><a asp-area="" asp-controller="Shop" asp-action="Index">Tiendas</a></li>
+                        <li><a asp-area="" asp-controller="BookingHistory" asp-action="Index">Historia</a></li>
                     }
                     else
                     {
