@@ -18,6 +18,6 @@ namespace HairApp.Web.Data
         public string ImageFullPath => ImageId == Guid.Empty
              //? $"https://hairapp.azurewebsites.net/images/noimage.png"
              ? $"https://localhost:44352/images/noimage.png"
-            : $"https://hairapp.blob.core.windows.net/shopimages/{ImageId}";
+            : $"https://blobhairapp.blob.core.windows.net/shopimages/{ImageId}";
     }
 }

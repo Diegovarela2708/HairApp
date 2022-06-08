@@ -42,7 +42,7 @@ namespace HairApp.Web.Models
         public string ImageFullPath => ImageId == Guid.Empty
             //? $"https://algamarsa.azurewebsites.net/images/noimage.png"
             ? $"https://localhost:44352/images/noimage.png"
-            : $"https://hairapp.blob.core.windows.net/user/{ImageId}";
+            : $"https://blobhairapp.blob.core.windows.net/users/{ImageId}";
 
         [Display(Name = "Image")]
         public IFormFile ImageFile { get; set; }

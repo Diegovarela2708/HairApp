@@ -70,7 +70,7 @@ namespace HairApp.Web.Controllers
            
         }
 
-        [Authorize(Roles = "User,Admin")]
+        [Authorize(Roles = "SuperAdmin,Admin")]
         public IActionResult Create()
         {
             ShopViewModel model = new ShopViewModel
@@ -290,8 +290,7 @@ namespace HairApp.Web.Controllers
             {
 
                 ShopId = shop.Id,
-                IsActive = true,
-                ServiceTime = 0
+                IsActive = true                
             };
 
             return View(model);
@@ -369,7 +368,7 @@ namespace HairApp.Web.Controllers
                         return NotFound();
                     }
 
-                    service.ServiceTime = model.ServiceTime;
+                    service.ServiceTime = Convert.ToInt32(model.Time);
                     service.IsActive = model.IsActive;
                     _context.Update(service);
                     await _context.SaveChangesAsync();
@@ -441,7 +440,7 @@ namespace HairApp.Web.Controllers
 
                     int Prueba = today.CompareTo(booking.DateLocal);
 
-                    if (true)
+                    if (booking.DateLocal > today)
                     {
                         _flashMessage.Warning("Verifique la fecha.");
                         return View(model);
@@ -451,11 +450,15 @@ namespace HairApp.Web.Controllers
                         _flashMessage.Warning("La fecha no esta disponible.");
                         return View(model);
                     }
+                    else
+                    {
+                        //booking.User = user;
+                        _context.Add(booking);
+                        await _context.SaveChangesAsync();
+                        return RedirectToAction(nameof(Index));
+                    }
 
-                    //booking.User = user;
-                    _context.Add(booking);
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
+                    
                 }
                 catch (DbUpdateException dbUpdateException)
                 {
@@ -474,6 +477,120 @@ namespace HairApp.Web.Controllers
                 }
             }          
             return View(model);
+        }
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AddImage(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            Shop shop = await _context.Shops.FindAsync(id);
+            if (shop == null)
+            {
+                return NotFound();
+            }
+
+            AddShopImageViewModel model = new AddShopImageViewModel { ShopId = shop.Id };
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+
+        public async Task<IActionResult> AddImage(AddShopImageViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+
+
+                try
+                {
+                    Shop shop = await _context.Shops
+                    .Include(p => p.ShopImages)
+                    .FirstOrDefaultAsync(p => p.Id == model.ShopId);
+                    if (shop == null)
+                    {
+                        return NotFound();
+                    }
+
+                    Guid imageId = await _blobHelper.UploadBlobAsync(model.ImageFile, "shopimages");
+                    if (shop.ShopImages == null)
+                    {
+                        shop.ShopImages = new List<ShopImage>();
+                    }
+
+                    shop.ShopImages.Add(new ShopImage { ImageId = imageId });
+                    _context.Update(shop);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction($"{nameof(Details)}/{shop.Id}");
+
+                }
+                catch (Exception exception)
+                {
+                    ModelState.AddModelError(string.Empty, exception.Message);
+                }
+            }
+
+            return View(model);
+        }
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteImage(int? id)
+        {
+
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            ShopImage shopimge = await _context.ShopImages
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (shopimge == null)
+            {
+                return NotFound();
+            }
+
+            Shop shop = await _context.Shops.FirstOrDefaultAsync(p => p.ShopImages.FirstOrDefault(pi => pi.Id == shopimge.Id) != null);
+
+            try
+            {
+
+                _context.ShopImages.Remove(shopimge);
+                await _context.SaveChangesAsync();
+                return RedirectToAction($"{nameof(Details)}/{shop.Id}");
+            }
+            catch (Exception ex)
+            {
+                _flashMessage.Danger(ex.Message);
+            }
+            _flashMessage.Confirmation("Imagen eliminada");
+            return RedirectToAction($"{nameof(Details)}/{shop.Id}");
+        }
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteService(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            Service service = await _context.Services
+                .FirstOrDefaultAsync(c => c.Id == id.Value);
+
+            if (service == null)
+            {
+                return NotFound();
+            }
+
+            Shop shop = await _context.Shops.FirstOrDefaultAsync(p => p.Services.FirstOrDefault(c => c.Id == service.Id) != null);
+            _context.Services.Remove(service);
+            await _context.SaveChangesAsync();
+            _flashMessage.Confirmation("Servicio eliminado");
+            return RedirectToAction($"{nameof(Details)}/{shop.Id}");
         }
     }
 }

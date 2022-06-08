@@ -28,7 +28,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="ServiceTime" class="control-label"></label>
-                <input asp-for="ServiceTime" class="form-control" />
+                <input asp-for="Time" class="form-control" onkeypress="return /[0-9]/i.test(event.key)" />
                 <span asp-validation-for="ServiceTime" class="text-danger"></span>
             </div>
             <div class="form-group">

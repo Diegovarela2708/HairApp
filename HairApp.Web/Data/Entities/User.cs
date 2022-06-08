@@ -37,7 +37,7 @@ namespace HairApp.Web.Data.Entities
         [Display(Name = "Image")]
         public string ImageFullPath => ImageId == Guid.Empty
         ? $"https://localhost:44352/images/noimage.png"
-            : $"https://hairapp.blob.core.windows.net/user/{ImageId}";
+            : $"https://blobhairapp.blob.core.windows.net/users/{ImageId}";
 
         [Display(Name = "Tipo Usuario")]
         public UserType UserType { get; set; }

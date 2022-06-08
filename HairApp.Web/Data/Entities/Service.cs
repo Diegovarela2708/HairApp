@@ -13,10 +13,13 @@ namespace HairApp.Web.Data.Entities
         public int Id { get; set; }
 
         [Display(Name = "Nombre Servicio")]
+        [Required]
         public string Name { get; set; }
         [Display(Name = "Descripción")]
+        [Required]
         public string Description { get; set; }
         [Display(Name = "Tiempo del servicio")]
+        [Required]
         public int ServiceTime { get; set; }
         [Display(Name = "Activo")]
         public bool IsActive { get; set; }

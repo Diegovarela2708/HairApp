@@ -9,5 +9,6 @@ namespace HairApp.Web.Models
     public class ServiceViewModel:Service
     {
         public int ShopId { get; set; }
+        public string Time { get; set; }
     }
 }
